@@ -1,0 +1,52 @@
+﻿Notes:
+
+1) Save to the app.exe.config file doesn't work 
+DONE2) Implement a nested structure for the phone book?
+DONE3) Add a SQL database? How much space will this take up?
+2)Figure out enter key for treeview
+3)Enhance keyboard navigation
+ a)Figure out auto select a node when opening phonebook tab to allow keyboard navigation
+ b)Insert tooltips for Buttons? (Call= Alt+C, Enter, etc)
+
+ 4)Add buttons to collection to simplify management??
+
+
+
+Things to merge:
+1. PCTS Combo box
+2. PCTS Cbo update
+3. Load PCTS contacts
+4. Combo selected change actions
+5. Clean up call flow (eg when items get added to txtinput.text)
+
+
+To do:
+1. xFix Phonebook customer name not updating bug
+2. xFix tab index for spddial index.
+		Not sure how to do this correctly, it goes from panel 1 to panel 2. Can it jump panels?
+3. xSend to system tray
+
+
+LOG:
+9/12
+	-Can call phone numbers with spaces when launched from command line.
+	-Appending a "c" to the end will close quick dialer
+	-Added right click context menu to taskbar icon
+	-Added delete button
+
+9/13
+	-Added drag/drop
+
+9/21
+	-Fixed delete node bug
+	-Added call and end to taskbar icon context menu
+
+9/22
+	-Added autocomplete
+
+
+NEXT:
+	-Enable autocomplete?
+		>How to implement with names? Would have to use some parsing in the strip script with a funky string format to know where to snip.
+			e.g. Bryn, New Hanover /// #########
+		>Do recent phone numbers only?
