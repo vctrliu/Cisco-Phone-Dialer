@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Config>
+  <speed-dials>
+    <!--SPEED DIALS: You can only have 8 speed dials, additional entries will not be used-->
+    <spd phone="7700" name="Meeting Place1" />
+    <spd phone="7700" name="Meeting Place2" />
+    <spd phone="7700" name="Meeting Place3" />
+    <spd phone="7700" name="Meeting Place4" />
+    <spd phone="7700" name="Meeting Place5" />
+    <spd phone="7700" name="Meeting Place6" />
+    <spd phone="7700" name="Meeting Place7" />
+    <spd phone="7700" name="Meeting Place8" />
+  </speed-dials>
+  <phonebook>
+    <!--PHONEBOOK: No limit, add as many customers and contacts as you'd like-->
+    <customer name="Internal Contacts">
+      <contact name="Meeting Place" phone="7700" />
+      <contact name="CaTS" phone="4444" />
+      <contact name="Facilities" phone="7777" />
+    </customer>
+    <customer name="Customer A">
+      <contact name="Contact A" phone="7700" />
+      <contact name="Contact B" phone="7700" />
+      <contact name="Contact C" phone="7700" />
+    </customer>
+  </phonebook>
+  <pcsys>
+    <!--PC SYSTEMS LIST: Must be changed in XML, can't add it in the program-->
+    <pcts name="First Last" phone="1234" />
+    <pcts name="First Last" phone="1234" />
+    <pcts name="First Last" phone="1234" />
+    <pcts name="First Last" phone="1234" />
+    <pcts name="First Last" phone="1234" />
+    <pcts name="First Last" phone="1234" />
+    <pcts name="First Last" phone="1234" />
+    <pcts name="First Last" phone="1234" />
+    <pcts name="First Last" phone="1234" />
+    <pcts name="First Last" phone="1234" />
+    <pcts name="First Last" phone="1234" />
+    <pcts name="First Last" phone="1234" />
+    <pcts name="First Last" phone="1234" />
+    <pcts name="First Last" phone="1234" />
+    <pcts name="First Last" phone="1234" />
+    <pcts name="First Last" phone="1234" />
+  </pcsys>
+</Config>
