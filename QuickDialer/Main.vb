@@ -4,7 +4,7 @@ Imports System.Xml
 Public Class Main
     Dim sNumber As String 'Used to hold the number being dialed
     Dim isMini As Boolean 'Determine whether the form is in compact mode
-    Dim sfilename As String
+    Dim sfilename As String 'xml file that stores the phone list info
 
     '=====Form Load Events=====
 
@@ -12,29 +12,31 @@ Public Class Main
         sfilename = "QuickDialer.xml"
         'sfilename = "test.xml"
 
-        Call CallCommandLineArgs()
-        Call LoadContacts()
-        Call LoadcboPCTS()
-        Call PaintSpdButtons()
-        Call PaintSpdIndex()
-        Call PaintIconContextMenu()
-        Call BuildAutoComplete()
+        Call CallCommandLineArgs() 'Execute any command line arguments
+        Call LoadContacts() 'Load the contacts list
+        Call LoadcboPCTS() 'Load the dropdown team contacts box
+        Call PaintSpdButtons() 'Populate the speed dial buttons
+        Call PaintSpdIndex() 'Populate the speed dial menu (for editing)
+        Call PaintIconContextMenu() 'Populate taskbar button right click menu
+        Call BuildAutoComplete() 'Create autocompletion reference list
 
     End Sub
+
     'Load customer contacts
     Private Sub LoadContacts()
-        Dim reader As XmlTextReader = New XmlTextReader(sfilename)
-        Dim lspdReadIndex As Long
 
+        Dim reader As XmlTextReader = New XmlTextReader(sfilename) 'initalize xml reader
+        Dim lspdReadIndex As Long 'counter for loading speed dials
 
         Do While reader.Read()
-            Dim cnode As TreeNode
 
-            Select Case reader.NodeType
+            Dim cnode As TreeNode 'xml reader will insert the contacts into a treenode for the phonelist
 
+            Select Case reader.NodeType 'Check each node's typ
                 Case XmlNodeType.Element
                     'MessageBox.Show(reader.Name & "element")
 
+                    'Load the speed dials from the file
                     If reader.Name = "spd" Then
                         Dim sSpdName As String
                         Dim sSpdNum As String
@@ -44,7 +46,7 @@ Public Class Main
                         reader.MoveToNextAttribute()
                         sSpdName = reader.Value
 
-                        With spdlist(lspdReadIndex)
+                        With spdlist(lspdReadIndex) 'Populate the speed dial directory array
                             .name = sSpdName
                             .phone = sSpdNum
                         End With
@@ -53,7 +55,7 @@ Public Class Main
 
                     End If
 
-
+                    'Load the organiztion's name, create a new node for the organization
                     If reader.Name = "customer" Then
                         Dim sCustName As String
                         Dim newnode As New TreeNode
@@ -70,17 +72,16 @@ Public Class Main
 
                         CustTree.Nodes.Add(newnode)
                         cnode = newnode
-                        newnode = Nothing
+                        newnode = Nothing 'Set to "nothing" or else it errors
 
                         lnumcust = lnumcust + 1
                         ltempindex = lnumcust - 1
 
-                        ReDim Preserve CustList(ltempindex)
+                        ReDim Preserve CustList(ltempindex) 'Add organization's name to the array of organizations
                         CustList(ltempindex) = sCustName
-
-
                     End If
 
+                    'Load the each contact for the organization
                     If reader.Name = "contact" Then
                         Dim sContName As String
                         Dim sContPhone As String
@@ -100,12 +101,9 @@ Public Class Main
 
                         cnode.Nodes.Add(newnode)
                         newnode = Nothing
-
                     End If
 
-
-
-                    'PCTS List populate
+                    'Load pcts team member phone numbers
                     If reader.Name = "pcts" Then
                         Dim ltempcounter As Long
                         Dim stempname As String
@@ -120,31 +118,19 @@ Public Class Main
 
                         lnumPCTS = lnumPCTS + 1
                         ltempcounter = lnumPCTS - 1
-                        ReDim Preserve pctslist(ltempcounter)
+                        ReDim Preserve pctslist(ltempcounter) 'Add to the pcts directory array
 
                         With pctslist(ltempcounter)
                             .name = stempname
                             .phone = stempnum
                         End With
                         'MessageBox.Show(pctslist(ltempcounter).name)
-
-
-
                     End If
 
-
-
-
-
-                Case XmlNodeType.Text 'Display the text in each element.
-                    'MessageBox.Show(reader.Value & "text")
-
-                Case XmlNodeType.EndElement 'Display end of element.
-                    'MessageBox.Show(reader.Name & "end element")
-
-
             End Select
+
         Loop
+
         lspdReadIndex = 0
         reader.Close()
         reader = Nothing
@@ -153,7 +139,7 @@ Public Class Main
 
     'Load PCTS List
     Private Sub LoadcboPCTS()
-        'Populate the PCTS dropdown menu
+        'Populate the PCTS dropdown combo using the PCTS directory array
         Dim lindex As Long
         Dim lmax As Long
         lmax = lnumPCTS - 1
@@ -166,7 +152,7 @@ Public Class Main
 
     End Sub
 
-    'Populate Speed dial butons
+    'Populate Speed dial butons using the speed dial directory array
     Private Sub PaintSpdButtons()
         Dim newbut As Button
         Dim lindex As Long
@@ -178,25 +164,25 @@ Public Class Main
         Next
     End Sub
 
-    'Populate Speed dial index
+    'Populate Speed dial index using te speed dial directory array
     Private Sub PaintSpdIndex()
         Dim txt1 As TextBox
         Dim txt2 As TextBox
         Dim lindex1 As Long
         Dim lindex2 As Long
 
+        'Populate left panels with names
         For Each txt1 In PnlSpdIndex.Panel1.Controls
             txt1.Text = spdlist(lindex1).name
             txt1.Tag = lindex1
             lindex1 = lindex1 + 1
-
         Next
 
+        'Populate right panels with corresponding phone numbers
         For Each txt2 In PnlSpdIndex.Panel2.Controls
             txt2.Text = spdlist(lindex2).phone
             txt2.Tag = lindex2
             lindex2 = lindex2 + 1
-
         Next
     End Sub
 
@@ -224,6 +210,9 @@ Public Class Main
     End Sub
 
     'Populate the Auto Completion Suggestion list
+    'Because autocomplete isn't intelligent to start lookups from the middle of a string, 
+    'entries are duplicated, one entry is name first, second is phone number first
+
     Private Sub BuildAutoComplete()
         Dim pnode As TreeNode
         Dim cnode As TreeNode
@@ -241,8 +230,8 @@ Public Class Main
 
                 'Traverse each Organization node and add the child nodes to the autocomplete list.
                 For Each cnode In pnode.Nodes
-                    stempname1 = cnode.Name & " @ " & stempparentname & " >> " & cnode.Tag
-                    stempname2 = cnode.Tag & " << " & cnode.Name & " @ " & stempparentname
+                    stempname1 = cnode.Name & " @ " & stempparentname & " >> " & cnode.Tag 'Outputs: Customer Name @ Organization Name >> Phone Number
+                    stempname2 = cnode.Tag & " << " & cnode.Name & " @ " & stempparentname 'Outputs: Phone Number << Customer Name @ Organization
                     AutoCompletelist.Add(stempname1)
                     AutoCompletelist.Add(stempname2)
 
@@ -252,8 +241,8 @@ Public Class Main
 
         'Add all PCTS to list
         For lctr = 0 To lnumPCTS - 1
-            stempname1 = pctslist(lctr).name & " >> " & pctslist(lctr).phone
-            stempname2 = pctslist(lctr).phone & " << " & pctslist(lctr).name
+            stempname1 = pctslist(lctr).name & " >> " & pctslist(lctr).phone 'outputs: PCTS name >> phone
+            stempname2 = pctslist(lctr).phone & " << " & pctslist(lctr).name 'outputs: phone << PCTS name
             AutoCompletelist.Add(stempname1)
             AutoCompletelist.Add(stempname2)
 
@@ -269,7 +258,7 @@ Public Class Main
 
     End Sub
 
-    '=====Call out commands=====
+    '=====Phone call functions=====
 
     'Dial any command line arguments
     Private Sub CallCommandLineArgs()
