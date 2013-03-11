@@ -1,4 +1,6 @@
-﻿Imports System
+﻿'Main.vb contains the functiona and variable necessary for running the program.
+
+Imports System
 Imports System.Xml
 
 Public Class Main
@@ -278,7 +280,7 @@ Public Class Main
         Call InitializeCall(sdialme)
 
         If isCloseout Then
-            Threading.Thread.Sleep(1000)
+            Threading.Thread.Sleep(1000) 'Pause before close, or else it won't dial the number in time
             Me.Close()
         End If
     End Sub
@@ -301,7 +303,7 @@ Public Class Main
         cnode = CustTree.SelectedNode
         If cnode.Level = 1 Then
             Call InitializeCall(cnode.Tag)
-            TabControl1.SelectTab(0)
+            TabControl1.SelectTab(0) 'switch to main tab so you can end call easily
         End If
     End Sub
 
@@ -315,13 +317,13 @@ Public Class Main
         ElseIf Len(sNumber) = 4 Then 'internal extension
             sDialString = sNumber
             DialOut(sDialString)
-        ElseIf Len(sNumber) = 7 Then 'local number
+        ElseIf Len(sNumber) = 7 Then 'local number entered
             sDialString = "8" & sNumber
             DialOut(sDialString)
-        ElseIf Len(sNumber) = 10 Then 'long distance, without the 1
+        ElseIf Len(sNumber) = 10 Then 'long distance entered, without the 1
             sDialString = "81" & sNumber
             DialOut(sDialString)
-        ElseIf Len(sNumber) = 11 Then 'long distance, with the 1. Yay!
+        ElseIf Len(sNumber) = 11 Then 'long distance, with the 1. Yay! Only dial the 8 for outgoing calls
             sDialString = "8" & sNumber
             DialOut(sDialString)
         Else
@@ -331,7 +333,7 @@ Public Class Main
 
     End Sub
 
-    'Strip the input dial string.
+    'Strip the input dial string of illegal characters.
     Private Sub Strip(ByVal sStripInput As String)
         If Len(sStripInput) = 0 Then
             Exit Sub
@@ -364,7 +366,7 @@ Public Class Main
 
     End Sub
 
-    'This function calls into the webdialer thingy in guru that sends the SOAP message to your phone.
+    'This function uses the embedded IE object on this form to load the cisco webdialer service page that sends the SOAP message to your phone.
     Private Sub DialOut(ByVal sNum As String)
         Dim sURL As String
         Dim sCommandLine As String
@@ -396,7 +398,7 @@ Public Class Main
     Private Sub CustTree_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles CustTree.KeyDown
         'Call the selected customer contact when Enter key is pressed
         If e.KeyValue = 13 Then
-            If CustTree.SelectedNode.Level = 1 Then
+            If CustTree.SelectedNode.Level = 1 Then 'if level=0, then you have the contact's organization selected
                 'MessageBox.Show(CustTree.SelectedNode.Tag)
                 Call InitializeCall(CustTree.SelectedNode.Tag)
             End If
@@ -435,12 +437,12 @@ Public Class Main
         If isMini Then
             Me.Width = 255
             Me.Height = 341
-            Me.FormBorderStyle = 3
+            Me.FormBorderStyle = 3 'fixed dialog
             isMini = False
         Else
             Me.Width = 255
             Me.Height = 95
-            Me.FormBorderStyle = 5
+            Me.FormBorderStyle = 5 'fixed tool window
             isMini = True
         End If
     End Sub
@@ -497,7 +499,7 @@ Public Class Main
         Dim sCustName As String
         Dim sTempPhone As String
 
-        PopUp.sNewNum = txtInput.Text
+        PopUp.sNewNum = txtInput.Text 'if numbered is entered in the textbox, pass this to the new form to avoid re-entry
 
         PopUp.ShowDialog()
 
@@ -505,13 +507,14 @@ Public Class Main
             Exit Sub
         End If
 
+        'store the public variables created by the popup
         sTempName = PopUp.sNewName
         sTempPhone = PopUp.sNewNum
         sCustName = PopUp.sNewCust
 
         If PopUp.isNewCust Then
-            Dim tnode As New TreeNode
-            Dim snode As New TreeNode
+            Dim tnode As New TreeNode 'organization level node
+            Dim snode As New TreeNode 'contact level node
             Dim ltempindex As Long
 
             With tnode
@@ -522,7 +525,7 @@ Public Class Main
             CustTree.Nodes.Add(tnode)
             lnumcust = lnumcust + 1
 
-            ltempindex = lnumcust - 1
+            ltempindex = lnumcust - 1 'arry starts at 0
             ReDim Preserve CustList(ltempindex)
             CustList(ltempindex) = sCustName
 
@@ -537,7 +540,7 @@ Public Class Main
         Else
             Dim tnode As TreeNode
             Dim snode As New TreeNode
-            tnode = findnode(sCustName)
+            tnode = findnode(sCustName) 'find the customer's organization and insert appropriately. 
             With snode
                 .Name = sTempName
                 .Text = sTempName
@@ -552,8 +555,7 @@ Public Class Main
 
     End Sub
 
-    Private Function findnode(ByRef input As String)
-        'Find the correct Customer node to insert the new customer contact node
+    Private Function findnode(ByRef input As String) 'Find the correct Customer node to insert the new customer contact node
         Dim fnode As TreeNode
         Dim rnode As TreeNode
 

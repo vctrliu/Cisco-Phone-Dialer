@@ -1,4 +1,6 @@
-﻿Imports System.Configuration
+﻿'Module1.vb declares several public variables that are used by several forms.
+
+Imports System.Configuration
 Imports System.Collections.Specialized
 Module Module1
     Public lnumcust As Long 'number of organizations in phone list file
